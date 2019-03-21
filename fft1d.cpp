@@ -81,10 +81,12 @@ struct BitReverse2
 template <int n>
 struct BitReverse4
 {
-    bool judg[n];
-    int record[n],rec[n];
+    int rec[n];
+	std::vector<int> sp;
     BitReverse4()
     {
+		bool judg[n];
+    	int record[n],x[n];
         for (int i = 0; i < n; i++)
             judg[i] = 0;
         unsigned count = 0, k = n - 1;
@@ -109,14 +111,24 @@ struct BitReverse4
             rec[rec[i]]=i;
             judg[k] = !judg[k];
         }
+		int tk=0;
+		sp.resize(n);
+		for (int i = 0; i < n; i++)
+		{
+			if (!judg[i])
+			{
+				std::swap(x[i], x[record[i]]);
+				sp[2*tk]=i;
+				sp[2*tk+1]=record[i];
+				tk++;
+			}
+		}
     }
     void operator()(double *x)
     {
-        for (int i = 0; i < n; i++)
-        {
-            if (!judg[i])
-                std::swap(x[i], x[record[i]]);
-        }
+        for(int i=0;i<n;i+=2){
+			std::swap(x[sp[i]],x[sp[i+1]]);
+		}
     }
 };
 size_t log4(size_t x)
